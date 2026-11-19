@@ -14,6 +14,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"runtime/debug"
 	"strings"
 	"time"
 )
@@ -68,7 +69,11 @@ func run(ctx context.Context, args []string, out, errOut io.Writer) error {
 	}
 	cmd, rest := global.Arg(0), global.Args()[1:]
 	if cmd == "version" {
-		_, err := fmt.Fprintln(out, Version)
+		v := Version
+		if info, ok := debug.ReadBuildInfo(); ok && v == "dev" && info.Main.Version != "" && info.Main.Version != "(devel)" {
+			v = info.Main.Version // set by go install module@version
+		}
+		_, err := fmt.Fprintln(out, v)
 		return err
 	}
 	cfg, err := Load(*path)
