@@ -1,0 +1,7 @@
+[Unit]
+Description=roost: keep Claude Code and Codex sessions
+
+[Service]
+Type=oneshot
+ExecStart=%h/go/bin/roost run
+StandardOutput=null
